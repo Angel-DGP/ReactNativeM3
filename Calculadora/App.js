@@ -29,7 +29,7 @@ export default function App() {
         let suma = parseFloat(valor1) + parseFloat(valor2)
         setSuma(suma)
       }}/>
-      <Text style={styles.h2}>Suma : {sumaState}</Text>
+      <Text style={styles.h2}>Suma: {sumaState}</Text>
       <Text>---------------------------</Text>
       <Button title="Restar"
       onPress={()=>{
