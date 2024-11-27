@@ -8,6 +8,7 @@ import {
   TextInput,
   Button,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 
 let personas = [
@@ -59,20 +60,20 @@ export default function App() {
     }
     return false;
   };
-  let ItemPersona = (props) => {
+  let ItemPersona = ({index,persona}) => {
     return (
       <View style={styles.itemPersona}>
         <View style={styles.itemLeft}>
-          <Text style={styles.textPri}>{props.index}</Text>
+          <Text style={styles.textPri}>{index}</Text>
         </View>
         <View style={styles.itemMiddle}>
           <View style={styles.itemNombres}>
             <Text style={styles.textNombre}>
-              {props.persona.nombre} {props.persona.apellido}
+              {persona.nombre} {persona.apellido}
             </Text>
           </View>
           <View>
-            <Text style={styles.textSecu}>{props.persona.cedula}</Text>
+            <Text style={styles.textSecu}>{persona.cedula}</Text>
           </View>
         </View>
         <View style={styles.itemRight}>
@@ -81,21 +82,21 @@ export default function App() {
             color="green"
             onPress={() => {
               isNew = false;
-              setCedula(props.persona.cedula);
-              setNombre(props.persona.nombre);
-              setApellido(props.persona.apellido);
-              actualIndex = props.index;
+              setCedula(persona.cedula);
+              setNombre(persona.nombre);
+              setApellido(persona.apellido);
+              actualIndex = index;
             }}
           />
-          <Button
-            title=" X "
-            color="red"
-            onPress={() => {
-              actualIndex = props.index;
+          
+          <TouchableOpacity onPress={() => {
+              actualIndex = index;
               personas.splice(actualIndex, 1);
               setNumElementos(personas.length);
-            }}
-          />
+              console.log("Se presiono")
+            }}>
+              <Text>XX</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -131,8 +132,8 @@ export default function App() {
       </View>
       <FlatList
         data={personas}
-        renderItem={(obj) => {
-          return <ItemPersona index={obj.index} persona={obj.item} />;
+        renderItem={({item,index}) => {
+          return <ItemPersona index={index} persona={item} />;
         }}
         keyExtractor={(item) => {
           return item.cedula;

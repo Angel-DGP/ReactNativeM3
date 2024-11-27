@@ -8,6 +8,8 @@ import {
   Button,
   TextInput,
   Alert,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
 let productos = [
   {
@@ -55,13 +57,19 @@ export default function App() {
   const [precioCompra, setPrecioCompra] = useState();
   const [precioVenta, setPrecioVenta] = useState("PRECIO DE VENTA");
   const [numClicks, setNumClicks] = useState(0);
+  const [modal, setModalVisible] = useState(true); //Tengo que cambiarlo a false
   let save = () => {
     if (
-      codigo == null || codigo == '' ||
-      categoria == null || categoria == '' ||
-      precioCompra == NaN || precioCompra == '' ||
-      nombre == null || nombre == '' ||
-      precioCompra == NaN || precioCompra == '' 
+      codigo == null ||
+      codigo == "" ||
+      categoria == null ||
+      categoria == "" ||
+      precioCompra == NaN ||
+      precioCompra == "" ||
+      nombre == null ||
+      nombre == "" ||
+      precioCompra == NaN ||
+      precioCompra == ""
     ) {
       Alert.alert("INFO", "Todos los campos son obligatorios");
     } else {
@@ -72,24 +80,21 @@ export default function App() {
           categoria: categoria,
           precioCompra: parseFloat(precioCompra),
           precioVenta: parseFloat(precioVenta),
-          
-        }
+        };
         if (find(codigo) == null) {
           productos.push(producto);
           limpiar();
         } else {
           Alert.alert("INFO", "Ya existe un producto con ese codigo");
         }
-
-        
       } else {
         productos[indexN].nombre = nombre;
         productos[indexN].categoria = categoria;
         productos[indexN].precioCompra = parseFloat(precioCompra);
         productos[indexN].precioVenta = parseFloat(precioVenta);
+        limpiar();
         isNew = true;
       }
-      
     }
     setNumClicks(numClicks + 1);
   };
@@ -124,9 +129,7 @@ export default function App() {
         </View>
 
         <View style={styles.itemRight}>
-          <Button
-            title="E"
-            color="green"
+          <TouchableOpacity
             onPress={() => {
               isNew = false;
               indexN = props.index;
@@ -136,16 +139,19 @@ export default function App() {
               setPrecioCompra(props.producto.precioCompra.toString());
               setPrecioVenta(props.producto.precioVenta.toString());
             }}
-          />
-          <Button
-            title="X"
-            color="red"
+            activeOpacity={0.1}
+          >
+            <Text style={styles.textButton}>E</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => {
+              setModalVisible(!modal);
               indexN = props.index;
-              productos.splice(indexN, 1);
-              setNumClicks(numClicks + 1);
             }}
-          />
+            activeOpacity={0.1}
+          >
+            <Text style={styles.textButtonR}>X</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -153,6 +159,35 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Modal animationType="fade" transparent={true} visible={modal}>
+        <View style={styles.centeredView}>
+          <View style={styles.viewModal}>
+            <View style={styles.modalMain}>
+              <View style={styles.upModal}>
+                <Text style={styles.textModal}>
+                  ¿Estas seguro que deseas eliminar este producto?
+                </Text>
+              </View>
+              <View style={styles.bottomModal}>
+                <Button
+                  title="Cancelar"
+                  onPress={() => {
+                    setModalVisible(!modal);
+                  }}
+                />
+                <Button
+                  title="Si, eliminar"
+                  onPress={() => {
+                    productos.splice(indexN, 1);
+                    setNumClicks(numClicks + 1);
+                    setModalVisible(!modal);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <Text style={styles.title}>Productos</Text>
       <View style={styles.containerInputs}>
         <TextInput
@@ -213,9 +248,7 @@ export default function App() {
         renderItem={(obj) => {
           return <ItemProducto producto={obj.item} index={obj.index} />;
         }}
-        keyExtractor={(item) => {
-          return item.id;
-        }}
+        keyExtractor={(item) => item.id}
         style={styles.list}
       />
       <StatusBar style="auto" />
@@ -279,17 +312,15 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   itemMiddle: {
-    flex: 8,
+    flex: 7,
     borderWidth: 0,
-    paddingHorizontal: 4,
   },
   itemRight: {
-    flex: 2,
+    flex: 3,
     borderColor: "black",
     borderWidth: 0,
-    paddingHorizontal: 8,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     alignItems: "center",
   },
   textInput: {
@@ -309,4 +340,63 @@ const styles = StyleSheet.create({
   textContador: {
     fontWeight: "bold",
   },
+  textButton: {
+    color: "green",
+    fontSize: 18,
+    borderWidth: 0,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+  },
+  textButtonR: {
+    color: "red",
+    fontSize: 18,
+    borderWidth: 0,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+  },
+  viewModal: {
+    flex: 1,
+    margin: 10,
+    backgroundColor: "white",
+    borderRadius: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    paddingHorizontal: 18,
+    justifyContent: "center",
+    paddingTop: 25,
+    paddingBottom: 0,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(28, 27, 23, 0.5)",
+    paddingVertical: 385,
+    borderWidth: 0
+  },
+  modalMain: {},
+  upModal: {
+    flex: 2,
+  },
+  bottomModal: {
+    flex: 1,
+
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 50,
+    marginBottom: 10,
+  },
+  textModal: {
+    fontWeight: "bold",
+    fontSize: 20,
+    textAlign: "center",
+    paddingTop: 6
+  },
+  buttonModal: {},
 });
