@@ -8,7 +8,6 @@ import {
   TextInput,
   Button,
   Alert,
-  TouchableOpacity,
 } from "react-native";
 
 let personas = [
@@ -88,15 +87,15 @@ export default function App() {
               actualIndex = index;
             }}
           />
-          
-          <TouchableOpacity onPress={() => {
+          <Button
+            title=" X "
+            color="red"
+            onPress={() => {
               actualIndex = index;
               personas.splice(actualIndex, 1);
               setNumElementos(personas.length);
-              console.log("Se presiono")
-            }}>
-              <Text>XX</Text>
-          </TouchableOpacity>
+            }}
+          />
         </View>
       </View>
     );
