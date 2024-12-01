@@ -100,3 +100,8 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
   },
 });
+
+//@react-navigation/drawer
+//react-native-reanimated
+//react-native-safe-area-context
+//react-native-gesture-handler
